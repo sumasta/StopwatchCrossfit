@@ -32,7 +32,8 @@
 
  // Include the correct display library
  // For a connection via I2C using Wire include
- #include "BLEHandler.h"
+ #include "workOuts.h"
+#include "BLEHandler.h"
 #include "SPIFlashSystem.h"
 #include <Wire.h>  // Only needed for Arduino 1.6.5 and earlier
  #include "SSD1306Wire.h" // legacy include: `#include "SSD1306.h"`
@@ -237,7 +238,7 @@ void setup() {
   print_wakeup_reason();
 
   beginSPIFFS();
- setupBLE();
+  setupBLE();
 
   initFrames();
 

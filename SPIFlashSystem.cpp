@@ -222,8 +222,38 @@ void fileTest1(void) {
 
 }
 
-void fileTest2(void) {
-	//setupBLE();
-	readFile(SPIFFS, "/hello.txt");
+
+void scanXML(fs::FS &fs, const char * path) {
+
+	Serial.printf("Reading file: %s\r\n", path);
+
+	File file = fs.open(path);
+	if (!file || file.isDirectory()) {
+		Serial.println("- failed to open file for reading");
+		return;
+	}
+
+	long counterLF = 0;
+	Serial.println("- read from file:");
+	while (file.available() && counterLF<20) {
+		byte in = file.read();
+		Serial.write(in);
+		Serial.print(":");
+		Serial.println(in);
+		if (in == 13) counterLF++;
+		//SerialBT.write(file.read());
+	}
+
+	Serial.println();
+	Serial.println();
+	Serial.println();
+
+	Serial.print("Total Lines: ");
+	Serial.println(counterLF);
+
 }
 
+void fileTest2(void) {
+	//setupBLE();
+	scanXML(SPIFFS, "/hello.txt");
+}

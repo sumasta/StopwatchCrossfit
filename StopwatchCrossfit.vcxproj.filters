@@ -30,12 +30,18 @@
     <ClInclude Include="BLEHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="workOuts.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SPIFlashSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="BLEHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="workOuts.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
