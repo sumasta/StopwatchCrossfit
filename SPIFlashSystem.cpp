@@ -7,6 +7,7 @@
 #include "FS.h"
 #include "SPIFFS.h"
 #include "Arduino.h"
+#include "workOuts.h"
 
 /* You only need to format SPIFFS the first time you run a
 test or else use the SPIFFS plugin to create a partition
@@ -223,6 +224,26 @@ void fileTest1(void) {
 }
 
 
+String XMLSearchPhrase[14] = {"wod name",
+							"section name",
+							"config type",
+							"<resetclock>",
+							"<rounds>",
+							"<timecap>",
+							"<hardcap>",
+							"<split>",
+							"<fulltime>",
+							"<movement seq>",
+							"<name>",
+							"<reps>",
+							"<split>"
+							};
+
+boolean XMLSearchScanType[14] = { 1,1,1,0,0,0,0,0,0,1,0,0,0 };
+
+int counterWod = 0;
+int counterMovements = 0;
+
 void scanXML(fs::FS &fs, const char * path) {
 
 	Serial.printf("Reading file: %s\r\n", path);
@@ -235,18 +256,89 @@ void scanXML(fs::FS &fs, const char * path) {
 
 	long counterLF = 0;
 	Serial.println("- read from file:");
-	while (file.available() && counterLF<20) {
-		byte in = file.read();
-		Serial.write(in);
-		Serial.print(":");
-		Serial.println(in);
-		if (in == 13) counterLF++;
-		//SerialBT.write(file.read());
-	}
 
-	Serial.println();
-	Serial.println();
-	Serial.println();
+	String bufferPerLine;
+
+	while (file.available()) {
+		char in = file.read();
+
+		bufferPerLine+=in;
+
+		// #########################################################
+
+		if (in == 13) {
+			counterLF++;
+
+			if (StringContains(bufferPerLine, XMLSearchPhrase[counterWod])!=-1) {
+				Serial.print("Found!: ");
+				Serial.print(XMLSearchPhrase[counterWod]);
+				Serial.print(" = ");
+
+				//Serial.println(cropStringQuotationMarks(bufferPerLine));
+
+
+
+				switch (counterWod) {
+				case 0: // WOD NAME
+					if (StringContains(bufferPerLine, XMLSearchPhrase[counterWod]) != -1) {
+						setWorkoutsName(counterWod, cropStringQuotationMarks(bufferPerLine));
+					};
+					break;
+				case 1: // SECTION NAME
+
+					break;
+				case 2: // CONFIG TYPE
+
+					break;
+				case 3: // RESET CLOCK
+
+					break;
+				case 4: // ROUNDS
+
+					break;
+				case 5: // TIMECAP
+
+					break;
+				case 6: // HARDCAP
+
+					break;
+				case 7: // SPLIT
+
+					break;
+				case 8: // FULLTIME
+
+					break;
+				case 9: // MOVEMENT SEQUENCE
+
+					break;
+				case 10: // NAME
+
+					break;
+				case 11: // REPS
+
+					break;
+				case 12: // SPLIT
+
+					break;		
+				}
+
+				/*
+				if (XMLSearchScanType[counterWod]) {
+					setWorkoutsName(counterWod, cropStringQuotationMarks(bufferPerLine));
+					Serial.println(getWorkoutsName(counterWod));
+				}
+				else {
+					setWorkoutsName(counterWod, cropStringQuotationBrackets(bufferPerLine));
+					Serial.println(getWorkoutsName(counterWod));
+				}
+				*/
+
+			}
+			bufferPerLine = "";
+		}
+
+		// ##########################################################
+	}
 
 	Serial.print("Total Lines: ");
 	Serial.println(counterLF);
@@ -256,4 +348,56 @@ void scanXML(fs::FS &fs, const char * path) {
 void fileTest2(void) {
 	//setupBLE();
 	scanXML(SPIFFS, "/hello.txt");
+}
+
+int StringContains(String s, String search) {
+	int max = s.length() - search.length();
+	int lgsearch = search.length();
+
+	for (int i = 0; i <= max; i++) {
+		if (s.substring(i, i + lgsearch) == search) return i;
+	}
+
+	return -1;
+}
+
+String cropStringQuotationMarks(String text) {
+	int startIndex, endIndex;
+	int length = text.length();
+	boolean foundFirst = false;
+
+	for (int i = 0; i < length; i++) {
+
+		if (text.charAt(i) == '"' && foundFirst) {
+			endIndex = i;
+			break;
+		}
+		if (text.charAt(i) == '"' && !foundFirst) {
+			startIndex = i+1;
+			foundFirst = true;
+		}
+	}
+
+	return text.substring(startIndex, endIndex);
+}
+
+String cropStringQuotationBrackets(String text) {
+	int startIndex, endIndex;
+	int length = text.length();
+	
+	boolean foundFirst = false;
+
+	for (int i = 0; i < length; i++) {
+
+		if (text.charAt(i) == '<' && foundFirst) {
+			endIndex = i;
+			break;
+		}
+		if (text.charAt(i) == '>' && !foundFirst) {
+			startIndex = i + 1;
+			foundFirst = true;
+		}
+	}
+
+	return text.substring(startIndex, endIndex);
 }

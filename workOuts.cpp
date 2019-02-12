@@ -1,6 +1,3 @@
-// 
-// 
-// 
 
 #include "workOuts.h"
 
@@ -13,7 +10,6 @@ public:
 
 class workOuts {
 public:
-
 	String name;
 	int sequence;
 
@@ -42,11 +38,91 @@ public:
 	void chengeName(String nameNew) {
 		this->name = nameNew;
 	}
-
 };
 
 workOuts myWorkouts[10];
 movements myMovements[10][10];
+
+void setWorkoutsName(int index, String name) {
+	myWorkouts[index].name = name;
+}
+
+String getWorkoutsName(int index) {
+	return myWorkouts[index].name;
+}
+
+void setSequence(int index, int seq) {
+	myWorkouts[index].sequence = seq;
+}
+
+int getSequence(int index) {
+	return myWorkouts[index].sequence;
+}
+
+void setConfigType(int index, boolean type) {
+	myWorkouts[index].configTypes = type;
+}
+
+boolean getConfigType(int index) {
+	return myWorkouts[index].configTypes;
+}
+
+void setRound(int index, int rounds) {
+	myWorkouts[index].rounds = rounds;
+}
+
+int getRounds(int index) {
+	return myWorkouts[index].rounds;
+}
+
+void setHardCap(int index, boolean type) {
+	myWorkouts[index].hardCap = type;
+}
+
+boolean getHardcap(int index) {
+	return myWorkouts[index].hardCap;
+}
+
+void setSplit(int index, boolean type) {
+	myWorkouts[index].split = type;
+}
+
+boolean getSplit(int index) {
+	return myWorkouts[index].split;
+}
+
+void setFulltime(int index, boolean type) {
+	myWorkouts[index].fullTime = type;
+}
+
+boolean getFulltime(int index) {
+	return myWorkouts[index].fullTime;
+}
+
+void setMovementName(int wodIndex, int moveIndex, String name) {
+	myMovements[wodIndex][moveIndex].name = name;
+}
+
+String getMovementName(int wodIndex, int moveIndex) {
+	return myMovements[wodIndex][moveIndex].name;
+}
+
+void setMovementReps(int wodIndex, int moveIndex, int reps) {
+	myMovements[wodIndex][moveIndex].reps = reps;
+}
+
+int getMovementReps(int wodIndex, int moveIndex) {
+	return myMovements[wodIndex][moveIndex].reps;
+}
+
+void setMovementSplit(int wodIndex, int moveIndex, boolean split) {
+	myMovements[wodIndex][moveIndex].split = split;
+}
+
+boolean getMovementSplit(int wodIndex, int moveIndex) {
+	return myMovements[wodIndex][moveIndex].split;
+}
+
 
 void assignData(int selector) {
 	myWorkouts[0].name = "Murph";

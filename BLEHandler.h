@@ -1,5 +1,5 @@
 // BLEHandler.h
-
+/*
 #ifndef _BLEHANDLER_h
 #define _BLEHANDLER_h
 
@@ -12,4 +12,4 @@
 void setupBLE(void);
 
 #endif
-
+*/

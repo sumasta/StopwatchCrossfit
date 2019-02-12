@@ -221,6 +221,8 @@ void listDir(fs::FS &fs, const char * dirname, uint8_t levels);
 void readFile(fs::FS &fs, const char * path);
 */
 
+
+
 void setup() {
   Serial.begin(115200);
   Serial.println();
@@ -238,7 +240,7 @@ void setup() {
   print_wakeup_reason();
 
   beginSPIFFS();
-  setupBLE();
+// setupBLE();
 
   initFrames();
 
@@ -1140,7 +1142,6 @@ void drawTimeToSetAMRAP(int time[], byte blinkDigit, boolean blink) {
 
 void drawTimeToSet(int time[], byte blinkDigit, boolean blink) {
 
-
 	display.clear();
 
 	String timeToSet = (String)time[0] + (String)time[1] + ":" + (String)time[2] + (String)time[3];
@@ -1158,7 +1159,6 @@ void drawTimeToSet(int time[], byte blinkDigit, boolean blink) {
 			display.fillCircle(5, 40, 5);
 		}
 	}
-
 
 	display.setTextAlignment(TEXT_ALIGN_CENTER);
 	display.setFont(ArialMT_Plain_16);

@@ -130,4 +130,5 @@ C:\Users\sumastap\AppData\Local\Temp\VMBuilds\StopwatchCrossfit\esp32_esp32\Rele
  C:\Users\sumastap\AppData\Local\arduino15\packages\esp32\hardware\esp32\1.0.1\cores\esp32/Arduino.h \
  C:\Users\sumastap\AppData\Local\arduino15\packages\esp32\hardware\esp32\1.0.1\variants\esp32/pins_arduino.h \
  C:\Users\sumastap\AppData\Local\arduino15\packages\esp32\hardware\esp32\1.0.1\libraries\FS\src/FS.h \
+ C:\Users\sumastap\AppData\Local\Temp\VMBuilds\StopwatchCrossfit\esp32_esp32\Release\workOuts.h \
  C:\Users\sumastap\AppData\Local\arduino15\packages\esp32\hardware\esp32\1.0.1\libraries\SPIFFS\src/SPIFFS.h

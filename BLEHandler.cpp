@@ -1,7 +1,7 @@
 
-
 #include "BLEHandler.h"
 
+/*
 #include "BluetoothSerial.h"
 
 #if !defined(CONFIG_BT_ENABLED) || !defined(CONFIG_BLUEDROID_ENABLED)
@@ -15,3 +15,4 @@ void setupBLE() {
 	SerialBT.begin("SumastaBLETest"); //Bluetooth device name
 	Serial.println("The device started, now you can pair it with bluetooth!");
 }
+*/
