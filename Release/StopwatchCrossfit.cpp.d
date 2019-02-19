@@ -128,6 +128,10 @@ C:\Users\sumastap\AppData\Local\Temp\VMBuilds\StopwatchCrossfit\esp32_esp32\Rele
  C:\Users\sumastap\AppData\Local\arduino15\packages\esp32\hardware\esp32\1.0.1\cores\esp32/Esp.h \
  C:\Users\sumastap\AppData\Local\arduino15\packages\esp32\hardware\esp32\1.0.1\cores\esp32/Arduino.h \
  C:\Users\sumastap\AppData\Local\arduino15\packages\esp32\hardware\esp32\1.0.1\variants\esp32/pins_arduino.h \
+ C:\Users\sumastap\Documents\Arduino\libraries\esp8266-oled-ssd1306\src/OLEDDisplayUi.h \
+ C:\Users\sumastap\Documents\Arduino\libraries\esp8266-oled-ssd1306\src/OLEDDisplay.h \
+ C:\Users\sumastap\Documents\Arduino\libraries\esp8266-oled-ssd1306\src/OLEDDisplayFonts.h \
+ C:\Users\sumastap\AppData\Local\Temp\VMBuilds\StopwatchCrossfit\esp32_esp32\Release\competitionWOD.h \
  C:\Users\sumastap\AppData\Local\Temp\VMBuilds\StopwatchCrossfit\esp32_esp32\Release\workOuts.h \
  C:\Users\sumastap\AppData\Local\Temp\VMBuilds\StopwatchCrossfit\esp32_esp32\Release\BLEHandler.h \
  C:\Users\sumastap\AppData\Local\Temp\VMBuilds\StopwatchCrossfit\esp32_esp32\Release\SPIFlashSystem.h \
@@ -136,9 +140,6 @@ C:\Users\sumastap\AppData\Local\Temp\VMBuilds\StopwatchCrossfit\esp32_esp32\Rele
  C:\Users\sumastap\AppData\Local\arduino15\packages\esp32\hardware\esp32\1.0.1\cores\esp32/esp32-hal.h \
  C:\Users\sumastap\AppData\Local\arduino15\packages\esp32\hardware\esp32\1.0.1/tools/sdk/include/freertos/freertos/queue.h \
  C:\Users\sumastap\Documents\Arduino\libraries\esp8266-oled-ssd1306\src/SSD1306Wire.h \
- C:\Users\sumastap\Documents\Arduino\libraries\esp8266-oled-ssd1306\src/OLEDDisplay.h \
- C:\Users\sumastap\Documents\Arduino\libraries\esp8266-oled-ssd1306\src/OLEDDisplayFonts.h \
- C:\Users\sumastap\Documents\Arduino\libraries\esp8266-oled-ssd1306\src/OLEDDisplayUi.h \
  C:\Users\sumastap\AppData\Local\Temp\VMBuilds\StopwatchCrossfit\esp32_esp32\Release\images.h \
  C:\Users\sumastap\Documents\Arduino\libraries\time/TimeLib.h \
  C:\Users\sumastap\AppData\Local\arduino15\packages\esp32\hardware\esp32\1.0.1/tools/sdk/include/driver/driver/adc.h \

@@ -28,11 +28,13 @@
  *
  */
 
-
+ // Include the UI lib
+#include "OLEDDisplayUi.h"
 
  // Include the correct display library
  // For a connection via I2C using Wire include
- #include "workOuts.h"
+ #include "competitionWOD.h"
+#include "workOuts.h"
 #include "BLEHandler.h"
 #include "SPIFlashSystem.h"
 #include <Wire.h>  // Only needed for Arduino 1.6.5 and earlier
@@ -47,8 +49,7 @@
  // #include "SSD1306Spi.h"
  // #include "SH1106SPi.h"
 
-// Include the UI lib
-#include "OLEDDisplayUi.h"
+
 
 // Include custom images
 
@@ -106,7 +107,9 @@ void drawFrame1(OLEDDisplay *display, OLEDDisplayUiState* state, int16_t x, int1
   // Please note that everything that should be transitioned
   // needs to be drawn relative to x and y
 
-  display->drawXbm(x + 34, y + 14, WiFi_Logo_width, WiFi_Logo_height, WiFi_Logo_bits);
+  //display->drawXbm(x + 34, y + 14, WiFi_Logo_width, WiFi_Logo_height, WiFi_Logo_bits);
+  display->drawXbm(x + 30, y + 0, WiFi_Logo_width, WiFi_Logo_height, WiFi_Logo_bits);
+
 }
 
 void frameManualWOD(OLEDDisplay *display, OLEDDisplayUiState* state, int16_t x, int16_t y) {
@@ -326,7 +329,8 @@ void changeFramesManualWOD() {
 		ui.setFrameAnimation(SLIDE_RIGHT);
 	}
 	else if (menuSetPointer == HOMEMENU && ui.getUiState()->currentFrame == 2) {
-		notProgrammedBanner();
+		//notProgrammedBanner();
+		printBuffer();
 	}
 	else if (menuSetPointer == HOMEMENU && ui.getUiState()->currentFrame == 3) {
 		
@@ -1319,9 +1323,49 @@ void deepSleep() {
 
 												  //If you were to use ext1, you would use it like
 												  //esp_sleep_enable_ext1_wakeup(BUTTON_PIN_BITMASK,ESP_EXT1_WAKEUP_ANY_HIGH);
-
 												  //Go to sleep now
+
 	Serial.println("Going to sleep now");
 	esp_deep_sleep_start();
 
+}
+
+void printBuffer(void) {
+	// Initialize the log buffer
+	// allocate memory to store 8 lines of text and 30 chars per line.
+	display.setLogBuffer(4, 15);
+
+	// Some test data
+	char* test[] = {
+		"Murph",
+		"14.3" ,
+		"13.5",
+		"Liz and Mary",
+		"how",
+		"the log buffer",
+		"is",
+		"working.",
+		"Even",
+		"scrolling is",
+		"working"
+	};
+
+	display.clear();
+	
+	for (uint8_t i = 0; i < 11; i++) {
+		display.clear();
+		display.setTextAlignment(TEXT_ALIGN_CENTER);
+		display.setFont(ArialMT_Plain_16);
+		display.drawString(64 + 0, 0 + 0, "Competition WOD");
+		display.setFont(ArialMT_Plain_10);
+
+		// Print to the screen
+		display.println(test[i]);
+
+		// Draw it to the internal screen buffer
+		display.drawLogBuffer(10, 16);
+		// Display it on the screen
+		display.display();
+		delay(500);
+	}
 }
