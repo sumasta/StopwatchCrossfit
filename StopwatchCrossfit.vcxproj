@@ -85,6 +85,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BLEHandler.h" />
+    <ClInclude Include="competitionWOD.h" />
     <ClInclude Include="images.h">
       <FileType>CppCode</FileType>
     </ClInclude>
@@ -94,6 +95,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BLEHandler.cpp" />
+    <ClCompile Include="competitionWOD.cpp" />
     <ClCompile Include="SPIFlashSystem.cpp" />
     <ClCompile Include="workOuts.cpp" />
   </ItemGroup>

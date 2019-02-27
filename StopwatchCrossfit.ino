@@ -74,9 +74,17 @@
 // or
 // SH1106Brzo  display(0x3c, D3, D5);
 
+
 #define		BUT_OK		23
 #define		BUT_RIGHT	33
 #define		BUT_LEFT	32
+
+
+/*
+#define		BUT_OK		32
+#define		BUT_RIGHT	23
+#define		BUT_LEFT	33
+*/
 
 #include <TimeLib.h>
 
@@ -84,7 +92,10 @@
 #define TIME_REQUEST  7    // ASCII bell character requests a time sync message 
 
 // Initialize the OLED display using Wire library
+//SSD1306Wire  display(0x3c, 21, 22);
+
 SSD1306Wire  display(0x3c, 5, 4);
+
 
 OLEDDisplayUi ui     ( &display );
 
@@ -185,6 +196,28 @@ void frameAMRAP(OLEDDisplay *display, OLEDDisplayUiState* state, int16_t x, int1
 	display->drawString(64 + x, 36 + y, "As Much Rep Possible");
 }
 
+void frameWODComp1(OLEDDisplay *display, OLEDDisplayUiState* state, int16_t x, int16_t y) {
+
+	display->setTextAlignment(TEXT_ALIGN_CENTER);
+	display->setFont(ArialMT_Plain_24);
+	display->drawString(64 + x, 15 + y, "19.1");
+
+	display->setTextAlignment(TEXT_ALIGN_CENTER);
+	display->setFont(ArialMT_Plain_10);
+	display->drawString(64 + x, 36 + y, "The Open");
+}
+
+void frameWODComp2(OLEDDisplay *display, OLEDDisplayUiState* state, int16_t x, int16_t y) {
+
+	display->setTextAlignment(TEXT_ALIGN_CENTER);
+	display->setFont(ArialMT_Plain_24);
+	display->drawString(64 + x, 15 + y, "15.1");
+
+	display->setTextAlignment(TEXT_ALIGN_CENTER);
+	display->setFont(ArialMT_Plain_10);
+	display->drawString(64 + x, 36 + y, "The Open");
+}
+
 void transmitXML(OLEDDisplay *display, OLEDDisplayUiState* state, int16_t x, int16_t y) {
 
 	display->setTextAlignment(TEXT_ALIGN_CENTER);
@@ -227,6 +260,7 @@ void readFile(fs::FS &fs, const char * path);
 
 
 void setup() {
+
   Serial.begin(115200);
   Serial.println();
   Serial.println();
@@ -247,8 +281,7 @@ void setup() {
 
   initFrames();
 
-  refreshTime();
-
+  refreshTime(); 
 
 }
 
@@ -329,16 +362,23 @@ void changeFramesManualWOD() {
 		ui.setFrameAnimation(SLIDE_RIGHT);
 	}
 	else if (menuSetPointer == HOMEMENU && ui.getUiState()->currentFrame == 2) {
-		//notProgrammedBanner();
-		printBuffer();
+		frames[0] = { frameWODComp1 };
+		frames[1] = { frameWODComp2 };
+		frames[2] = { frameBack };
+		frameCount = 3;
+		ui.setFrames(frames, frameCount);
+		menuSetPointer = COMPETITIONWODMENU;
+		ui.setFrameAnimation(SLIDE_RIGHT);
 	}
 	else if (menuSetPointer == HOMEMENU && ui.getUiState()->currentFrame == 3) {
-		
-		fileTest1();
+		notProgrammedBanner();
+		ESP.restart();
 
+		//fileTest1();
 	}
 	else if (menuSetPointer == HOMEMENU && ui.getUiState()->currentFrame == 4) {
-		fileTest2();
+		notProgrammedBanner();
+		ESP.restart();
 
 	}else if (menuSetPointer == MANUALWODMENU && ui.getUiState()->currentFrame == 0) { // manualWOD
 		ui.disableIndicator();
@@ -356,6 +396,14 @@ void changeFramesManualWOD() {
 		display.clear();
 		display.display();
 		deepSleep();
+	}
+	else if (menuSetPointer == COMPETITIONWODMENU && ui.getUiState()->currentFrame == 0) {
+		startWODCompetition(1);
+		initFrames();
+	}
+	else if (menuSetPointer == COMPETITIONWODMENU && ui.getUiState()->currentFrame == 1) {
+		notProgrammedBanner();
+		ESP.restart();
 	}
 	
 }
@@ -379,6 +427,31 @@ void notProgrammedBanner() {
 	delay(2000);
 	ESP.restart();
 	
+}
+
+void readyToStart(String title) {
+	display.clear();
+
+	display.setTextAlignment(TEXT_ALIGN_CENTER);
+	display.setFont(ArialMT_Plain_16);
+	display.drawString(64, 0, "Ready!");
+
+	display.setTextAlignment(TEXT_ALIGN_CENTER);
+	display.setFont(ArialMT_Plain_24);
+	display.drawString(64, 15, title);
+
+	display.setTextAlignment(TEXT_ALIGN_CENTER);
+	display.setFont(ArialMT_Plain_10);
+	display.drawString(64, 40, "Press Any 2 Start");
+	display.display();
+
+	while (1) {
+		if (digitalRead(BUT_OK) == LOW || digitalRead(BUT_RIGHT) == LOW || digitalRead(BUT_LEFT) == LOW) {
+			delay(250);
+			break;
+		}
+	}
+
 }
 
 void RFTSetTargetRound() {
@@ -732,6 +805,19 @@ void startAMRAP(int time[]) {
 			display.display();
 		}
 
+		if (digitalRead(BUT_OK) == LOW) {
+			delay(200);
+			int exitCounter = 0;
+			while (digitalRead(BUT_OK) == LOW) {
+				exitCounter++;
+
+				if (exitCounter > 3000) {
+					ESP.restart();
+				}
+				delay(1);
+			}
+		}
+
 		if (millis() - passTimer > 1000) {
 
 			secElapse++;
@@ -794,7 +880,6 @@ void startAMRAP(int time[]) {
 	}
 
 }
-
 
 void startRFT(int time[], int targetRound) {
 
@@ -860,6 +945,19 @@ void startRFT(int time[], int targetRound) {
 			if (targetRound == 0) {
 				finishRound = true;
 				break;
+			}
+		}
+
+		if (digitalRead(BUT_OK) == LOW) {
+			delay(200);
+			int exitCounter = 0;
+			while (digitalRead(BUT_OK) == LOW) {
+				exitCounter++;
+
+				if (exitCounter > 3000) {
+					ESP.restart();
+				}
+				delay(1);
 			}
 		}
 
@@ -1066,8 +1164,7 @@ void drawRTFCountingAMRAP(int targetRound, int secElapse, int minElapse) {
 
 	if (secElapse < 10) {
 		timeElapse += ":0" + (String)secElapse;
-	}
-	else {
+	} else {
 		timeElapse += ":" + (String)secElapse;
 	}
 
@@ -1097,7 +1194,6 @@ void drawRTFCountingAMRAP(int targetRound, int secElapse, int minElapse) {
 }
 
 void drawTimeToSetAMRAP(int time[], byte blinkDigit, boolean blink) {
-
 
 	display.clear();
 
@@ -1220,6 +1316,218 @@ void debounce(int button) {
 	while (digitalRead(button) == LOW) {
 
 	}
+}
+
+void startWODCompetition(int wodSelector) {
+
+	display.clear();
+	int counter = 1;
+
+	double totalTimeInMs = 1 * 1000;
+
+	
+	long timeNow;
+	long passTimer = millis();
+
+	int progress = 0;
+
+	int secElapse = 59;
+	int minElapse = 14;
+
+	boolean finishRound = false;
+
+	int targetRound = 19;
+	int initialTarget = targetRound;
+	long projectionReps = 0;
+
+	boolean moveType = true;
+	int totalReps = 0;
+
+	long totalmillisec = (minElapse+1) * 60000;
+	
+	readyToStart("19.1");
+
+	setTime(0, 0, 0, 23, 6, 2019);
+	updateDisplayCompWod(targetRound, totalReps, projectionReps, minElapse - minute(), 59 - second(), moveType);
+
+	long deltaTime, totalRepsTime;
+	long timeStamp = millis();
+
+	while (minute()<minElapse+1) {
+
+		if (digitalRead(BUT_RIGHT) == LOW) {
+			
+			totalReps++;
+			targetRound--;
+
+			if (targetRound == 0) {
+				targetRound = 19;
+				moveType = !moveType;
+			}
+
+			totalRepsTime = totalReps * totalmillisec;
+			deltaTime = millis() - timeStamp;
+
+			projectionReps = (totalRepsTime/deltaTime);
+			
+			//Serial.print("Pamungkas");
+
+			delay(200);
+			debounce(BUT_RIGHT);
+			updateDisplayCompWod(targetRound, totalReps, projectionReps, minElapse-minute(), 59-second(), moveType);
+
+		}
+
+		if (digitalRead(BUT_LEFT) == LOW) {
+			delay(200);
+			debounce(BUT_LEFT);
+
+			totalReps--;
+			targetRound++;
+
+			updateDisplayCompWod(targetRound, totalReps, projectionReps, minElapse - minute(), 59 - second(), moveType);
+		
+		}
+
+		if (digitalRead(BUT_OK) == LOW) {
+			delay(200);
+			int exitCounter = 0;
+			while (digitalRead(BUT_OK) == LOW) {
+				exitCounter++;
+				
+				if (exitCounter > 3000) {
+					ESP.restart();
+				}
+				delay(1);
+			}
+		}
+
+		if (millis() - passTimer > 1000) {
+
+			updateDisplayCompWod(targetRound, totalReps, projectionReps, minElapse-minute(), 59-second(), moveType);
+			passTimer = millis();
+		}
+
+		delay(5);
+	}
+
+
+		display.clear();
+
+		display.setTextAlignment(TEXT_ALIGN_CENTER);
+		display.setFont(ArialMT_Plain_16);
+		display.drawString(64, 0, "CONRATS!");
+
+		display.setTextAlignment(TEXT_ALIGN_CENTER);
+		display.setFont(ArialMT_Plain_24);
+		display.drawString(64, 15, (String)totalReps);
+
+		display.setTextAlignment(TEXT_ALIGN_CENTER);
+		display.setFont(ArialMT_Plain_16);
+		display.drawString(64, 40, "Repetitions");
+
+	display.display();
+
+	while ((digitalRead(BUT_OK) == HIGH) && (digitalRead(BUT_RIGHT) == HIGH) && (digitalRead(BUT_LEFT) == HIGH)) {
+		delay(20);
+	}
+
+	delay(500);
+	repeatDialog(true);
+
+	while (1) {
+		if (digitalRead(BUT_RIGHT) == LOW) {
+			display.clear();
+			display.display();
+			debounce(BUT_RIGHT);
+			delay(1000);
+			startWODCompetition(1);
+		}
+		else if (digitalRead(BUT_LEFT) == LOW) {
+			delay(50);
+			ESP.restart();
+		}
+		delay(20);
+	}
+
+}
+
+void updateDisplayCompWod(int remainingReps, int totalReps, long projections, int minuteRemaining, int secondRemaining, boolean wodType) {
+
+	display.clear();
+
+	display.setTextAlignment(TEXT_ALIGN_CENTER);
+	display.setFont(ArialMT_Plain_16);
+	display.drawString(35, 0, "19.1");
+
+	display.setTextAlignment(TEXT_ALIGN_LEFT);
+	display.setFont(ArialMT_Plain_10);
+	display.drawString(10, 17, "WBL: ");
+
+	display.setTextAlignment(TEXT_ALIGN_LEFT);
+	display.setFont(ArialMT_Plain_10);
+	display.drawString(10, 26, "ROW: ");
+
+	display.setTextAlignment(TEXT_ALIGN_RIGHT);
+	display.setFont(ArialMT_Plain_10);
+	display.drawString(67, 42, "Projections");
+	display.setTextAlignment(TEXT_ALIGN_RIGHT);
+	display.setFont(ArialMT_Plain_10);
+	display.drawString(67, 50, "Reps:");
+
+
+	display.drawLine(0, 17, 128, 17);
+	display.drawLine(70, 0, 70, 40);
+	display.drawLine(0, 40, 128, 40);
+
+
+	// round remaining now
+	display.setTextAlignment(TEXT_ALIGN_CENTER);
+	display.setFont(ArialMT_Plain_24);
+	display.drawString(50, 15, String(remainingReps));
+
+	// totalReps
+	display.setTextAlignment(TEXT_ALIGN_CENTER);
+	display.setFont(ArialMT_Plain_24);
+	display.drawString(100, 15, String(totalReps));
+
+	String timeRemaining;
+
+	if (minuteRemaining < 10) {
+		timeRemaining += "0" + (String)minuteRemaining;
+	}
+	else {
+		timeRemaining += (String)minuteRemaining;
+	}
+
+	timeRemaining += ":";
+
+	if (secondRemaining < 10) {
+		timeRemaining += "0" + (String)secondRemaining;
+	}
+	else {
+		timeRemaining += (String)secondRemaining;
+	}
+
+	// clock timer
+	display.setTextAlignment(TEXT_ALIGN_CENTER);
+	display.setFont(ArialMT_Plain_16);
+	display.drawString(100, 0, timeRemaining);
+
+	// projections
+	display.setTextAlignment(TEXT_ALIGN_CENTER);
+	display.setFont(ArialMT_Plain_16);
+	display.drawString(100, 45, String(projections));
+
+	if (wodType) {
+		display.drawCircle(4, 22, 2);
+	}
+	else {
+		display.drawCircle(4, 31, 2);
+	}
+
+	display.display();
+
 }
 
 #include <driver/adc.h>
